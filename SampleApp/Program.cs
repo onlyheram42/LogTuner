@@ -1,4 +1,6 @@
 
+using Serilog;
+
 namespace SampleApp
 {
     public class Program
@@ -14,6 +16,12 @@ namespace SampleApp
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Host.UseSerilog((context, services, configuration) =>
+            {
+                configuration
+                    .ReadFrom.Configuration(context.Configuration);
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -22,6 +30,7 @@ namespace SampleApp
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 
